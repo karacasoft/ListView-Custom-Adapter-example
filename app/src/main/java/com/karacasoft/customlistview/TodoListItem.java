@@ -5,6 +5,7 @@ package com.karacasoft.customlistview;
  */
 
 public class TodoListItem {
+
     private String text;
     private String description;
 

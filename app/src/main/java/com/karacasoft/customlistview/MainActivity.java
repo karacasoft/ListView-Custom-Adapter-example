@@ -1,7 +1,10 @@
 package com.karacasoft.customlistview;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -37,6 +40,44 @@ public class MainActivity extends AppCompatActivity {
         adapter = new CustomListAdapter(this, R.layout.list_item_todo, todoList);
 
         todoListView.setAdapter(adapter);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, AddItemActivity.class);
+                startActivityForResult(i, 100);
+            }
+        });
+
+        todoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                todoList.remove(i);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100) {
+            if(resultCode == RESULT_OK) {
+                String title = data.getStringExtra(AddItemActivity.EXTRA_TITLE);
+                String description = data.getStringExtra(AddItemActivity.EXTRA_DESCRIPTION);
+
+                TodoListItem item = new TodoListItem();
+                item.setText(title);
+                item.setDescription(description);
+                todoList.add(item);
+
+                adapter.notifyDataSetChanged();
+            }
+
+        }
 
     }
 }
